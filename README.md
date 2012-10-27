@@ -1,4 +1,4 @@
-The example from the presentation [Better Code for a Better World]().
+The example from the presentation [Better Code for a Better World](https://speakerdeck.com/joshaber/better-code-for-a-better-world).
 
 Our mission: create a form for the user to fill out. It should only allow submission if the form is valid. A form is valid if the user's entered a value for each field, and if the email and re-enter email fields match.
 
