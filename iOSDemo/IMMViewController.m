@@ -7,7 +7,6 @@
 //
 
 #import "IMMViewController.h"
-#import "NSObject+RACLifting.h"
 
 // Our mission: create a form for the user to fill out. It should only allow
 // submission if the form is valid. A form is valid if the user's entered a
@@ -60,8 +59,7 @@
 
 	// The button's enabledness is derived from whether we're processing and
 	// whether our form is valid.
-	RACSubscribable *buttonEnabled = [RACSubscribable combineLatest:@[ processing, formValid ]
-															 reduce:^(RACTuple *xs) {
+	RACSubscribable *buttonEnabled = [RACSubscribable combineLatest:@[ processing, formValid ] reduce:^(RACTuple *xs) {
 		BOOL processing = [xs[0] boolValue];
 		BOOL valid = [xs[1] boolValue];
 		return @(!processing && valid);
@@ -109,8 +107,7 @@
 		}];
 	// The submit count increments after the button's been clicked and we're
 	// done processing.
-	RACSubscribable *submitCount = [[RACSubscribable combineLatest:@[ submit, submissionEnded ]]
-									scanWithStart:@0 combine:^(NSNumber *running, id _) {
+	RACSubscribable *submitCount = [[RACSubscribable combineLatest:@[ submit, submissionEnded ]] scanWithStart:@0 combine:^(NSNumber *running, id _) {
 		return @(running.integerValue + 1);
 	}];
 

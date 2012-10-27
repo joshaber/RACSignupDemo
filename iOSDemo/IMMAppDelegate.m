@@ -7,15 +7,12 @@
 //
 
 #import "IMMAppDelegate.h"
-#import "IMMSimpleTest.h"
 
 @implementation IMMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-
-	[IMMSimpleTest doStuff];
 
     return YES;
 }
