@@ -92,13 +92,16 @@
 	RAC(self.reEmailField.enabled) = notProcessing;
 
 	id<RACSignal> submit = [self.createButton rac_signalForControlEvents:UIControlEventTouchUpInside];
-	// The first value from `processing` will be us setting it to NO below. So
-	// skip that value and then let us know when processing ends.
-	id<RACSignal> submissionEnded = [[processing
-		skip:1]
-		filter:^ BOOL (NSNumber *x) {
-			return !x.boolValue;
-		}];
+	// Submission ends when we move from processing to not processing.
+	id<RACSignal> submissionEnded = [[processing scanWithStart:@[ @NO, @NO ] combine:^(NSArray *previousPair, NSNumber *nowSubmitting) {
+		NSArray *wasSubmitting = previousPair[1];
+		return @[ wasSubmitting, nowSubmitting ];
+	}] filter:^ BOOL (NSArray *pair) {
+		NSNumber *wasSubmitting = pair[0];
+		NSNumber *nowSubmitting = pair[1];
+		return wasSubmitting.boolValue && !nowSubmitting.boolValue;
+	}];
+
 	// The submit count increments after the button's been clicked and we're
 	// done processing.
 	id<RACSignal> submitCount = [[RACSignal combineLatest:@[ submit, submissionEnded ]] scanWithStart:@0 combine:^(NSNumber *running, id _) {
