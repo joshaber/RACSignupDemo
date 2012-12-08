@@ -36,8 +36,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-	srand(time(NULL));
-
 	// Are all entries valid? This is derived entirely from the values of our UI.
 	id<RACSignal> formValid = [RACSignal
 		combineLatest:@[
@@ -147,7 +145,7 @@
 
 - (id<RACSignal>)doSomeNetworkStuff {
 	return [[[RACSignal interval:3.0f] take:1] flattenMap:^(id _) {
-		BOOL success = rand() % 2;
+		BOOL success = arc4random() % 2;
 		return success ? [RACSignal return:[RACUnit defaultUnit]] : [RACSignal error:[NSError errorWithDomain:@"" code:0 userInfo:nil]];
 	}];
 }
