@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		88367EB0163CA0B000547AB9 /* libReactiveCocoa-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88367EA4163C9FF700547AB9 /* libReactiveCocoa-iOS.a */; };
+		8882D4581673AFB00080E7CD /* libReactiveCocoa-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88367EA4163C9FF700547AB9 /* libReactiveCocoa-iOS.a */; };
 		88FC719416109DF100F8A774 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC719316109DF100F8A774 /* UIKit.framework */; };
 		88FC719616109DF100F8A774 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC719516109DF100F8A774 /* Foundation.framework */; };
 		88FC719816109DF100F8A774 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC719716109DF100F8A774 /* CoreGraphics.framework */; };
@@ -97,7 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88367EB0163CA0B000547AB9 /* libReactiveCocoa-iOS.a in Frameworks */,
+				8882D4581673AFB00080E7CD /* libReactiveCocoa-iOS.a in Frameworks */,
 				88FC719416109DF100F8A774 /* UIKit.framework in Frameworks */,
 				88FC719616109DF100F8A774 /* Foundation.framework in Frameworks */,
 				88FC719816109DF100F8A774 /* CoreGraphics.framework in Frameworks */,
@@ -437,6 +437,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(PROJECT_DIR)/External/ReactiveCocoa/ReactiveCocoaFramework\"/**";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-all_load";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
