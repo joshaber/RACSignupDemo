@@ -48,7 +48,7 @@
 			return @(firstName.length > 0 && lastName.length > 0 && email.length > 0 && reEmail.length > 0 && [email isEqual:reEmail]);
 		}];
 
-	// Get a subscribable from key-value observing the `processing` property.
+	// Get a signal from key-value observing the `processing` property.
 	RACSignal *processing = RACAble(self.processing);
 
 	// The button's enabledness is derived from whether we're processing and
@@ -57,7 +57,7 @@
 		return @(!processing.boolValue && formValid.boolValue);
 	}];
 
-	// The button's enabledness is driven by the `buttonEnabled` subscribable.
+	// The button's enabledness is driven by the `buttonEnabled` signal.
 	RAC(self.createButton.enabled) = buttonEnabled;
 
 	// The button's title color is driven by its enabledness.
@@ -66,7 +66,7 @@
 		return x.boolValue ? defaultButtonTitleColor : [UIColor lightGrayColor];
 	}];
 
-	// Update the title color every our text color subscribable changes.
+	// Update the title color every our text color signal changes.
 	[self.createButton rac_liftSelector:@selector(setTitleColor:forState:) withObjects:buttonTextColor, @(UIControlStateNormal)];
 
 	// Our fields' text color and enabledness is derived from whether we're
