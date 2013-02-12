@@ -89,9 +89,9 @@
 	RAC(self.emailField.enabled) = notProcessing;
 	RAC(self.reEmailField.enabled) = notProcessing;
 
-	id<RACSignal> submit = [self.createButton rac_signalForControlEvents:UIControlEventTouchUpInside];
+	RACSignal *submit = [self.createButton rac_signalForControlEvents:UIControlEventTouchUpInside];
 	// Submission ends when we move from processing to not processing.
-	id<RACSignal> submissionEnded = [[processing scanWithStart:@[ @NO, @NO ] combine:^(NSArray *previousPair, NSNumber *nowSubmitting) {
+	RACSignal *submissionEnded = [[processing scanWithStart:@[ @NO, @NO ] combine:^(NSArray *previousPair, NSNumber *nowSubmitting) {
 		NSArray *wasSubmitting = previousPair[1];
 		return @[ wasSubmitting, nowSubmitting ];
 	}] filter:^ BOOL (NSArray *pair) {
@@ -143,10 +143,10 @@
 	}];
 }
 
+- (RACSignal *)doSomeNetworkStuff {
 	return [[[RACSignal interval:3.0f] take:1] flattenMap:^(id _) {
 		BOOL success = arc4random() % 2;
 		return success ? [RACSignal return:[RACUnit defaultUnit]] : [RACSignal error:[NSError errorWithDomain:@"" code:0 userInfo:nil]];
-- (RACSignal *)doSomeNetworkStuff {
 	}];
 }
 
