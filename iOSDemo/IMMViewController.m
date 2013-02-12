@@ -133,7 +133,7 @@
 		IMMViewController *strongSelf = weakSelf;
 		strongSelf.processing = YES;
 		
-		[[[strongSelf doSomeNetworkStuff] finally:^{
+		[[[[strongSelf doSomeNetworkStuff] deliverOn:RACScheduler.mainThreadScheduler] finally:^{
 			strongSelf.processing = NO;
 		}] subscribeNext:^(id x) {
 			strongSelf.error = nil;
