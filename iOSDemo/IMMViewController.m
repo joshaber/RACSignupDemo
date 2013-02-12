@@ -34,10 +34,10 @@
 @implementation IMMViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+	[super viewDidLoad];
 
 	// Are all entries valid? This is derived entirely from the values of our UI.
-	id<RACSignal> formValid = [RACSignal
+	RACSignal *formValid = [RACSignal
 		combineLatest:@[
 			self.firstNameField.rac_textSignal,
 			self.lastNameField.rac_textSignal,
@@ -49,11 +49,11 @@
 		}];
 
 	// Get a subscribable from key-value observing the `processing` property.
-	id<RACSignal> processing = RACAble(self.processing);
+	RACSignal *processing = RACAble(self.processing);
 
 	// The button's enabledness is derived from whether we're processing and
 	// whether our form is valid.
-	id<RACSignal> buttonEnabled = [RACSignal combineLatest:@[ processing, formValid ] reduce:^(NSNumber *processing, NSNumber *formValid) {
+	RACSignal *buttonEnabled = [RACSignal combineLatest:@[ processing, formValid ] reduce:^(NSNumber *processing, NSNumber *formValid) {
 		return @(!processing.boolValue && formValid.boolValue);
 	}];
 
@@ -62,7 +62,7 @@
 
 	// The button's title color is driven by its enabledness.
 	UIColor *defaultButtonTitleColor = self.createButton.titleLabel.textColor;
-	id<RACSignal> buttonTextColor = [buttonEnabled map:^(NSNumber *x) {
+	RACSignal *buttonTextColor = [buttonEnabled map:^(NSNumber *x) {
 		return x.boolValue ? defaultButtonTitleColor : [UIColor lightGrayColor];
 	}];
 
@@ -71,7 +71,7 @@
 
 	// Our fields' text color and enabledness is derived from whether we're
 	// processing.
-	id<RACSignal> fieldTextColor = [processing map:^(NSNumber *x) {
+	RACSignal *fieldTextColor = [processing map:^(NSNumber *x) {
 		return x.boolValue ? [UIColor lightGrayColor] : [UIColor blackColor];
 	}];
 
@@ -80,7 +80,7 @@
 	RAC(self.emailField.textColor) = fieldTextColor;
 	RAC(self.reEmailField.textColor) = fieldTextColor;
 
-	id<RACSignal> notProcessing = [processing map:^(NSNumber *x) {
+	RACSignal *notProcessing = [processing map:^(NSNumber *x) {
 		return @(!x.boolValue);
 	}];
 	
@@ -102,7 +102,7 @@
 
 	// The submit count increments after the button's been clicked and we're
 	// done processing.
-	id<RACSignal> submitCount = [[RACSignal combineLatest:@[ submit, submissionEnded ]] scanWithStart:@0 combine:^(NSNumber *running, id _) {
+	RACSignal *submitCount = [[RACSignal combineLatest:@[ submit, submissionEnded ]] scanWithStart:@0 combine:^(NSNumber *running, id _) {
 		return @(running.integerValue + 1);
 	}];
 
@@ -111,7 +111,7 @@
 		return @(x.integerValue < 1);
 	}];
 
-	id<RACSignal> error = RACAble(self.error);
+	RACSignal *error = RACAble(self.error);
 
 	// Status label text and color are driven by whether we got an error.
 	RAC(self.statusLabel.text) = [error map:^(id x) {
@@ -143,10 +143,10 @@
 	}];
 }
 
-- (id<RACSignal>)doSomeNetworkStuff {
 	return [[[RACSignal interval:3.0f] take:1] flattenMap:^(id _) {
 		BOOL success = arc4random() % 2;
 		return success ? [RACSignal return:[RACUnit defaultUnit]] : [RACSignal error:[NSError errorWithDomain:@"" code:0 userInfo:nil]];
+- (RACSignal *)doSomeNetworkStuff {
 	}];
 }
 
