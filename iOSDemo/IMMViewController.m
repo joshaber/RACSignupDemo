@@ -18,6 +18,7 @@
 // state.
 
 @interface IMMViewController ()
+
 // All user input is essential state. How else could we get it?
 @property (nonatomic, weak) IBOutlet UITextField *firstNameField;
 @property (nonatomic, weak) IBOutlet UITextField *lastNameField;
@@ -26,16 +27,31 @@
 @property (nonatomic, weak) IBOutlet UILabel *statusLabel;
 @property (nonatomic, weak) IBOutlet UIButton *createButton;
 
-// `processing` and `error` are both essential even though they're not input by
-// the user. They decide what state our form is in.
-@property (nonatomic, assign) BOOL processing;
-@property (nonatomic, strong) NSError *error;
 @end
 
 @implementation IMMViewController
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+
+	RACSignal *submit = [self.createButton rac_signalForControlEvents:UIControlEventTouchUpInside];
+	// Each time the button is clicked, do the network request.
+	@weakify(self);
+	RACSignal *requests = [[submit map:^(id _) {
+		@strongify(self);
+		return [[self doSomeNetworkStuff] catch:^(NSError *error) {
+			return [RACSignal return:error];
+		}];
+	}] replayLazily];
+	RACSignal *latestRequest = [requests switchToLatest];
+	RACSignal *resultSignal = [latestRequest filter:^ BOOL (id value) {
+		return [value isKindOfClass:NSNumber.class];
+	}];
+	RACSignal *errorSignal = [latestRequest filter:^ BOOL (id value) {
+		return [value isKindOfClass:NSError.class];
+	}];
+	RACSignal *error = [[RACSignal merge:@[ errorSignal, [resultSignal mapReplace:nil] ]] deliverOn:RACScheduler.mainThreadScheduler];
+	RACSignal *processing = [[RACSignal merge:@[ [requests mapReplace:@YES], [latestRequest mapReplace:@NO] ]] deliverOn:RACScheduler.mainThreadScheduler];
 
 	// Are all entries valid? This is derived entirely from the values of our UI.
 	RACSignal *formValid = [RACSignal
@@ -49,12 +65,9 @@
 			return @(firstName.length > 0 && lastName.length > 0 && email.length > 0 && reEmail.length > 0 && [email isEqual:reEmail]);
 		}];
 
-	// Get a signal from key-value observing the `processing` property.
-	RACSignal *processing = RACAble(self.processing);
-
 	// The button's enabledness is derived from whether we're processing and
 	// whether our form is valid.
-	RACSignal *buttonEnabled = [RACSignal combineLatest:@[ processing, formValid ] reduce:^(NSNumber *processing, NSNumber *formValid) {
+	RACSignal *buttonEnabled = [RACSignal combineLatest:@[ [processing startWith:@NO], formValid ] reduce:^(NSNumber *processing, NSNumber *formValid) {
 		return @(!processing.boolValue && formValid.boolValue);
 	}];
 
@@ -90,7 +103,6 @@
 	RAC(self.emailField.enabled) = notProcessing;
 	RAC(self.reEmailField.enabled) = notProcessing;
 
-	RACSignal *submit = [self.createButton rac_signalForControlEvents:UIControlEventTouchUpInside];
 	// Submission ends when we click and then finish processing.
 	RACSignal *submissionEnded = [[[submit mapReplace:processing] switchToLatest] filter:^ BOOL (NSNumber *processing) {
 		return !processing.boolValue;
@@ -103,11 +115,9 @@
 	}];
 
 	// The status label only shows up after the first completed submission.
-	RAC(self.statusLabel.hidden) = [submitCount map:^(NSNumber *x) {
+	RAC(self.statusLabel.hidden) = [[submitCount startWith:@0] map:^(NSNumber *x) {
 		return @(x.integerValue < 1);
 	}];
-
-	RACSignal *error = RACAble(self.error);
 
 	// Status label text and color are driven by whether we got an error.
 	RAC(self.statusLabel.text) = [error map:^(id x) {
@@ -118,29 +128,6 @@
 	}];
 
 	RAC(UIApplication.sharedApplication, networkActivityIndicatorVisible) = processing;
-
-	self.error = nil;
-	self.processing = NO;
-
-	self.statusLabel.hidden = YES;
-
-	// Each time the button is clicked, do the network request.
-	@weakify(self);
-	RACSignal *requests = [[submit map:^(id _) {
-		@strongify(self);
-		return [[self doSomeNetworkStuff] catch:^(NSError *error) {
-			return [RACSignal return:error];
-		}];
-	}] replayLazily];
-	RACSignal *latestRequest = [requests switchToLatest];
-	RACSignal *resultSignal = [latestRequest filter:^ BOOL (id value) {
-		return [value isKindOfClass:NSNumber.class];
-	}];
-	RACSignal *errorSignal = [latestRequest filter:^ BOOL (id value) {
-		return [value isKindOfClass:NSError.class];
-	}];
-	RAC(self.error) = [[RACSignal merge:@[ errorSignal, [resultSignal mapReplace:nil] ]] deliverOn:RACScheduler.mainThreadScheduler];
-	RAC(self.processing) = [[RACSignal merge:@[ [requests mapReplace:@YES], [latestRequest mapReplace:@NO] ]] deliverOn:RACScheduler.mainThreadScheduler];
 }
 
 - (RACSignal *)doSomeNetworkStuff {
