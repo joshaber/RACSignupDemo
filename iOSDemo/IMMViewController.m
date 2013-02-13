@@ -124,6 +124,7 @@
 
 	self.statusLabel.hidden = YES;
 
+	// Each time the button is clicked, do the network request.
 	@weakify(self);
 	RACSignal *requests = [[submit map:^(id _) {
 		@strongify(self);
