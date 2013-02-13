@@ -7,6 +7,7 @@
 //
 
 #import "IMMViewController.h"
+#import "EXTScope.h"
 
 // Our mission: create a form for the user to fill out. It should only allow
 // submission if the form is valid. A form is valid if the user's entered a
@@ -123,26 +124,29 @@
 
 	self.statusLabel.hidden = YES;
 
-	__weak id weakSelf = self;
-	[submit subscribeNext:^(id _) {
-		IMMViewController *strongSelf = weakSelf;
-		strongSelf.processing = YES;
-		
-		[[[[strongSelf doSomeNetworkStuff] deliverOn:RACScheduler.mainThreadScheduler] finally:^{
-			strongSelf.processing = NO;
-		}] subscribeNext:^(id x) {
-			strongSelf.error = nil;
-		} error:^(NSError *error) {
-			strongSelf.error = error;
+	@weakify(self);
+	RACSignal *requests = [[submit map:^(id _) {
+		@strongify(self);
+		return [[self doSomeNetworkStuff] catch:^(NSError *error) {
+			return [RACSignal return:error];
 		}];
+	}] replayLazily];
+	RACSignal *latestRequest = [requests switchToLatest];
+	RACSignal *resultSignal = [latestRequest filter:^ BOOL (id value) {
+		return [value isKindOfClass:NSNumber.class];
 	}];
+	RACSignal *errorSignal = [latestRequest filter:^ BOOL (id value) {
+		return [value isKindOfClass:NSError.class];
+	}];
+	RAC(self.error) = [[RACSignal merge:@[ errorSignal, [resultSignal mapReplace:nil] ]] deliverOn:RACScheduler.mainThreadScheduler];
+	RAC(self.processing) = [[RACSignal merge:@[ [requests mapReplace:@YES], [latestRequest mapReplace:@NO] ]] deliverOn:RACScheduler.mainThreadScheduler];
 }
 
 - (RACSignal *)doSomeNetworkStuff {
-	return [[[RACSignal interval:3.0f] take:1] flattenMap:^(id _) {
+	return [[[[RACSignal interval:3] take:1] sequenceMany:^{
 		BOOL success = arc4random() % 2;
-		return success ? [RACSignal return:[RACUnit defaultUnit]] : [RACSignal error:[NSError errorWithDomain:@"" code:0 userInfo:nil]];
-	}];
+		return success ? [RACSignal return:@YES] : [RACSignal error:[NSError errorWithDomain:@"" code:0 userInfo:nil]];
+	}] replayLazily];
 }
 
 @end
