@@ -18,7 +18,6 @@
 		88FC71A816109DF100F8A774 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88FC71A716109DF100F8A774 /* Default@2x.png */; };
 		88FC71AA16109DF100F8A774 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88FC71A916109DF100F8A774 /* Default-568h@2x.png */; };
 		88FC71AD16109DF100F8A774 /* MainStoryboard_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88FC71AB16109DF100F8A774 /* MainStoryboard_iPhone.storyboard */; };
-		88FC71B016109DF100F8A774 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88FC71AE16109DF100F8A774 /* MainStoryboard_iPad.storyboard */; };
 		88FC71B316109DF100F8A774 /* IMMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FC71B216109DF100F8A774 /* IMMViewController.m */; };
 		88FC71BB16109DF100F8A774 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC71BA16109DF100F8A774 /* SenTestingKit.framework */; };
 		88FC71BC16109DF100F8A774 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC719316109DF100F8A774 /* UIKit.framework */; };
@@ -81,7 +80,6 @@
 		88FC71A716109DF100F8A774 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		88FC71A916109DF100F8A774 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		88FC71AC16109DF100F8A774 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPhone.storyboard; sourceTree = "<group>"; };
-		88FC71AF16109DF100F8A774 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard_iPad.storyboard; sourceTree = "<group>"; };
 		88FC71B116109DF100F8A774 /* IMMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IMMViewController.h; sourceTree = "<group>"; };
 		88FC71B216109DF100F8A774 /* IMMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IMMViewController.m; sourceTree = "<group>"; };
 		88FC71B916109DF100F8A774 /* iOSDemoTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSDemoTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,7 +162,6 @@
 				88FC71A216109DF100F8A774 /* IMMAppDelegate.h */,
 				88FC71A316109DF100F8A774 /* IMMAppDelegate.m */,
 				88FC71AB16109DF100F8A774 /* MainStoryboard_iPhone.storyboard */,
-				88FC71AE16109DF100F8A774 /* MainStoryboard_iPad.storyboard */,
 				88FC71B116109DF100F8A774 /* IMMViewController.h */,
 				88FC71B216109DF100F8A774 /* IMMViewController.m */,
 				88FC719A16109DF100F8A774 /* Supporting Files */,
@@ -313,7 +310,6 @@
 				88FC71A816109DF100F8A774 /* Default@2x.png in Resources */,
 				88FC71AA16109DF100F8A774 /* Default-568h@2x.png in Resources */,
 				88FC71AD16109DF100F8A774 /* MainStoryboard_iPhone.storyboard in Resources */,
-				88FC71B016109DF100F8A774 /* MainStoryboard_iPad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,14 +390,6 @@
 			name = MainStoryboard_iPhone.storyboard;
 			sourceTree = "<group>";
 		};
-		88FC71AE16109DF100F8A774 /* MainStoryboard_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				88FC71AF16109DF100F8A774 /* en */,
-			);
-			name = MainStoryboard_iPad.storyboard;
-			sourceTree = "<group>";
-		};
 		88FC71C316109DF100F8A774 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -476,6 +464,7 @@
 				GCC_PREFIX_HEADER = "iOSDemo/iOSDemo-Prefix.pch";
 				INFOPLIST_FILE = "iOSDemo/iOSDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -487,6 +476,7 @@
 				GCC_PREFIX_HEADER = "iOSDemo/iOSDemo-Prefix.pch";
 				INFOPLIST_FILE = "iOSDemo/iOSDemo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
